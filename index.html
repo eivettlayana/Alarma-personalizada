@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alarma de 30 Minutos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        #timer {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        button {
+            padding: 10px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: 0.3s;
+            margin: 5px;
+        }
+        .start { background-color: #28a745; color: white; }
+        .reset { background-color: #dc3545; color: white; }
+        button:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Temporizador</h2>
+        <div id="timer">30:00</div>
+        <button class="start" onclick="toggleTimer()" id="btnStart">Iniciar Alarma</button>
+        <button class="reset" onclick="resetTimer()">Reiniciar</button>
+    </div>
+
+    <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock_beeping.ogg" preload="auto"></audio>
+
+    <script>
+        let timeLeft = 30 * 60; // 30 minutos en segundos
+        let timerInterval;
+        let isRunning = false;
+
+        const display = document.getElementById('timer');
+        const audio = document.getElementById('alarmSound');
+        const btnStart = document.getElementById('btnStart');
+
+        function updateDisplay() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            display.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function toggleTimer() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                btnStart.textContent = "Continuar";
+            } else {
+                btnStart.textContent = "Pausar";
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        audio.play();
+                        alert("¡Tiempo cumplido!");
+                        resetTimer();
+                    }
+                }, 1000);
+            }
+            isRunning = !isRunning;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 30 * 60;
+            isRunning = false;
+            btnStart.textContent = "Iniciar Alarma";
+            updateDisplay();
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    </script>
+</body>
+</html><audio id="alarmSound" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
